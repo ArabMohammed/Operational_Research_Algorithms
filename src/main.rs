@@ -2,12 +2,14 @@ use std::u32;
 use rand::prelude::*;
 use std::time::Instant;
 mod operation_research_algorithms;
+mod bin_packing;
 enum Problems {
-    TSP
+    TSP, 
+    BIN_PACKING
 }
 
 fn main() {
-    let problem = Problems::TSP;
+    let problem = Problems::BIN_PACKING;
     match problem {
         Problems::TSP=>{
             // Example dynamic table
@@ -76,6 +78,29 @@ fn main() {
             println!("===> total_cost : {}",total_cost);
             println!("===> path : {:?}",path);
         }
+        Problems::BIN_PACKING=>{
+            let bin_capacity= 10;
+            let mut objects = vec![8,7,5,3,2,6,6,8,3,6,7,9,2,6,5,3,4];
+            let mut rng = rand::rng();
+            objects = vec![];
+            for _ in 0..100{
+                objects.push(rng.random_range(1..bin_capacity));
+            }
+            //let res = bin_packing::best_bin_fill(&objects, bin_capacity);
+            let mut start = Instant::now();
+            /*let (res,bins_content) = bin_packing::bin_packing_backtracking(&objects,bin_capacity);
+            let time_backtracking = start.elapsed();
+            println!("Backtracking runtime: {:?}", time_backtracking);
+            println!("Number of bins: {:?}",res);
+            println!("bins_content: {:?}",bins_content);*/
+            ///////////////////////////////////////////
+            start = Instant::now();
+            let (res,bins_content) =bin_packing::bin_packing_simulated_annealing(&objects,bin_capacity);
+            let time_sa = start.elapsed();
+            println!("Simulated Annealing runtime: {:?}", time_sa);
+            println!("Number of bins: {:?}",res);
+            println!("bins_content: {:?}",bins_content);
+        }
         _=>{
             //let val : usize = 10;
             //let res = operation_research_algorithms::fibonacci(val);
@@ -85,3 +110,5 @@ fn main() {
     }
 
 }
+
+// 1000 + 900 + 600 + 1000 + 600 
